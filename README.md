@@ -1,4 +1,4 @@
-# FixMyJSON
+# Fix My JSON
 
 FixMyJSON is a web application that helps users fix broken or unparsable JSON data quickly and easily. It utilizes the power of OpenAI's language model to correct invalid JSON input and provide the corrected output in a formatted manner.
 
