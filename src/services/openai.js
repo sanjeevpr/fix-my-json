@@ -15,5 +15,7 @@ export const fixJson = async (brokenJson) => {
     max_tokens: 500,
   });
 
-  return response.choices[0].message.content.trim();
+  const fixedJson = response.choices[0].message.content.trim();
+  console.log('API Response:', fixedJson); // Add this line to log the API response
+  return fixedJson;
 };

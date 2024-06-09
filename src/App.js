@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { fixJson } from './services/openai';
-import { JSONTree } from 'react-json-tree';
+import JSONPretty from 'react-json-pretty';
+import 'react-json-pretty/themes/monikai.css'; // Ensure this path is correct
 import './App.css';
 
 function App() {
@@ -13,9 +14,14 @@ function App() {
     try {
       setError(null); // Clear previous errors
       setLoading(true);
+      const fixedJsonString = await fixJson(inputJson);
+      console.log('Fixed JSON String:', fixedJsonString); // Log the fixed JSON string
+
+      // Attempt to parse the JSON
+      let parsedJson;
       try {
-        const fixedJsonString = await fixJson(inputJson);
-        const parsedJson = JSON.parse(fixedJsonString);
+        parsedJson = JSON.parse(fixedJsonString);
+        console.log('Parsed JSON:', parsedJson); // Log the parsed JSON
         setFixedJson(parsedJson);
       } catch (parsingError) {
         setError('Error parsing the fixed JSON. Please try again.');
@@ -39,12 +45,19 @@ function App() {
     navigator.clipboard.writeText(JSON.stringify(fixedJson, null, 2));
   };
 
-  const handleFormatJson = () => {
+  const handleFormatJson = (json, setJson) => {
     try {
-      const formattedJson = JSON.stringify(JSON.parse(inputJson), null, 2);
-      setInputJson(formattedJson);
+      const formattedJson = JSON.stringify(JSON.parse(json), null, 2);
+      setJson(formattedJson);
     } catch (error) {
       setError('Invalid JSON format. Please check your input.');
+    }
+  };
+
+  const handleFormatParsedJson = () => {
+    if (fixedJson) {
+      const formattedJsonString = JSON.stringify(fixedJson, null, 2);
+      setFixedJson(JSON.parse(formattedJsonString));
     }
   };
 
@@ -60,7 +73,7 @@ function App() {
           />
           <div className="buttons">
             <button onClick={handleClear}>Clear</button>
-            <button onClick={handleFormatJson}>Format JSON</button>
+            <button onClick={() => handleFormatJson(inputJson, setInputJson)}>Format JSON</button>
           </div>
         </div>
         <button className="fix-button" onClick={handleFixJson} disabled={loading}>
@@ -68,14 +81,26 @@ function App() {
         </button>
         <div className="json-box">
           {fixedJson ? (
-            <JSONTree data={fixedJson} />
+            <>
+              <JSONPretty className="react-json-pretty" data={fixedJson} />
+              <div className="buttons">
+                <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
+                <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
+              </div>
+            </>
           ) : (
-            <textarea
-              readOnly
-              placeholder="Fixed JSON will appear here..."
-            />
+            <>
+              <textarea
+                readOnly
+                placeholder="Fixed JSON will appear here..."
+                className="react-json-pretty"
+              />
+              <div className="buttons">
+                <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
+                <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
+              </div>
+            </>
           )}
-          <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
         </div>
       </div>
       {error && <div className="error-message">{error}</div>}
