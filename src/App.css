@@ -23,6 +23,7 @@ body {
   min-height: 400px;
   position: relative;
   padding: 20px;
+  padding-top: 0px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -104,6 +105,12 @@ textarea:active + .json-preview {
 
 .toolbar {
   display: flex;
-  justify-content: flex-start; /* Align buttons to the left */
-  gap: 10px; /* Add some space between buttons */
+  justify-content: flex-start;
+  gap: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  background-color: #007bff;
+
 }
