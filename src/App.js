@@ -60,6 +60,10 @@ function App() {
       <h1>FixMyJSON</h1>
       <div className="json-container">
         <div className="json-box input-box">
+          <div className="toolbar">
+            <button onClick={handleClear}>Clear</button>
+            <button onClick={() => handleFormatJson(inputJson, setInputJson)}>Format JSON</button>
+          </div>
           <div className="editor-container">
             <SyntaxHighlighter language="json" style={syntaxTheme} customStyle={{ backgroundColor: 'inherit', color: 'inherit' }}>
               {inputJson}
@@ -71,10 +75,6 @@ function App() {
               className="editor-textarea"
             />
           </div>
-          <div className="buttons">
-            <button onClick={handleClear}>Clear</button>
-            <button onClick={() => handleFormatJson(inputJson, setInputJson)}>Format JSON</button>
-          </div>
         </div>
         <div className="fix-button-container">
           <button className="fix-button" onClick={handleFixJson} disabled={loading}>
@@ -82,6 +82,10 @@ function App() {
           </button>
         </div>
         <div className="json-box output-box">
+          <div className="toolbar">
+            <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
+            <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
+          </div>
           {fixedJson ? (
             <>
               <div className="json-preview">
@@ -89,18 +93,10 @@ function App() {
                   {JSON.stringify(fixedJson, null, 2)}
                 </SyntaxHighlighter>
               </div>
-              <div className="buttons">
-                <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
-                <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
-              </div>
             </>
           ) : (
             <>
               <div className="placeholder">Fixed JSON will appear here...</div>
-              <div className="buttons">
-                <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
-                <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
-              </div>
             </>
           )}
         </div>

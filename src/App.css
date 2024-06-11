@@ -101,3 +101,9 @@ textarea:focus + .json-preview,
 textarea:active + .json-preview {
   outline: none;
 }
+
+.toolbar {
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the left */
+  gap: 10px; /* Add some space between buttons */
+}
