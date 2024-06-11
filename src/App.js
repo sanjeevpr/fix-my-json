@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { fixJson } from './services/openai';
 import JSONPretty from 'react-json-pretty';
-import 'react-json-pretty/themes/monikai.css'; // Ensure this path is correct
+import 'react-json-pretty/themes/monikai.css';
 import './App.css';
 
 function App() {
@@ -76,9 +76,11 @@ function App() {
             <button onClick={() => handleFormatJson(inputJson, setInputJson)}>Format JSON</button>
           </div>
         </div>
-        <button className="fix-button" onClick={handleFixJson} disabled={loading}>
-          {loading ? 'Fixing...' : 'Fix JSON'}
-        </button>
+        <div className="fix-button-container">
+          <button className="fix-button" onClick={handleFixJson} disabled={loading}>
+            {loading ? 'Fixing...' : 'Fix JSON'}
+          </button>
+        </div>
         <div className="json-box">
           {fixedJson ? (
             <>
