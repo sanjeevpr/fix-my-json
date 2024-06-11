@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { fixJson } from './services/openai';
-import JSONPretty from 'react-json-pretty';
-import 'react-json-pretty/themes/monikai.css';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { coy as syntaxTheme } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import './App.css';
 
 function App() {
@@ -12,24 +12,18 @@ function App() {
 
   const handleFixJson = async () => {
     try {
-      setError(null); // Clear previous errors
+      setError(null);
       setLoading(true);
       const fixedJsonString = await fixJson(inputJson);
-      console.log('Fixed JSON String:', fixedJsonString); // Log the fixed JSON string
-
-      // Attempt to parse the JSON
       let parsedJson;
       try {
         parsedJson = JSON.parse(fixedJsonString);
-        console.log('Parsed JSON:', parsedJson); // Log the parsed JSON
         setFixedJson(parsedJson);
       } catch (parsingError) {
         setError('Error parsing the fixed JSON. Please try again.');
-        console.error('Error parsing JSON:', parsingError);
       }
     } catch (error) {
       setError('Failed to fix JSON. Please try again.');
-      console.error('Error fixing JSON:', error);
     } finally {
       setLoading(false);
     }
@@ -65,12 +59,18 @@ function App() {
     <div className="App">
       <h1>FixMyJSON</h1>
       <div className="json-container">
-        <div className="json-box">
-          <textarea
-            value={inputJson}
-            onChange={(e) => setInputJson(e.target.value)}
-            placeholder="Paste your broken JSON here..."
-          />
+        <div className="json-box input-box">
+          <div className="editor-container">
+            <SyntaxHighlighter language="json" style={syntaxTheme} customStyle={{ backgroundColor: 'inherit', color: 'inherit' }}>
+              {inputJson}
+            </SyntaxHighlighter>
+            <textarea
+              value={inputJson}
+              onChange={(e) => setInputJson(e.target.value)}
+              placeholder="Paste your broken JSON here..."
+              className="editor-textarea"
+            />
+          </div>
           <div className="buttons">
             <button onClick={handleClear}>Clear</button>
             <button onClick={() => handleFormatJson(inputJson, setInputJson)}>Format JSON</button>
@@ -81,10 +81,14 @@ function App() {
             {loading ? 'Fixing...' : 'Fix JSON'}
           </button>
         </div>
-        <div className="json-box">
+        <div className="json-box output-box">
           {fixedJson ? (
             <>
-              <JSONPretty className="react-json-pretty" data={fixedJson} />
+              <div className="json-preview">
+                <SyntaxHighlighter language="json" style={syntaxTheme} customStyle={{ backgroundColor: 'inherit', color: 'inherit' }}>
+                  {JSON.stringify(fixedJson, null, 2)}
+                </SyntaxHighlighter>
+              </div>
               <div className="buttons">
                 <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
                 <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
@@ -92,11 +96,7 @@ function App() {
             </>
           ) : (
             <>
-              <textarea
-                readOnly
-                placeholder="Fixed JSON will appear here..."
-                className="react-json-pretty"
-              />
+              <div className="placeholder">Fixed JSON will appear here...</div>
               <div className="buttons">
                 <button onClick={handleCopy} disabled={!fixedJson}>Copy</button>
                 <button onClick={handleFormatParsedJson} disabled={!fixedJson}>Format JSON</button>
